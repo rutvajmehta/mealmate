@@ -14,7 +14,7 @@ MealMate simplifies meal management by:
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
+git clone <https://github.com/rutvajmehta/mealmate.git>
 cd mealmate
 ```
 
@@ -91,5 +91,5 @@ The application will be available at `http://localhost:3000`
 
 - **Developer**: Rutva Mehta
 - **Email**: [rutvajmehta@vt.edu](mailto:rutvajmehta@vt.edu)
-- **GitHub**: [My GitHub Profile](https://github.com/rutvajmehta)
-- **LinkedIn**: [My LinkedIn Profile](https://www.linkedin.com/in/rutvajmehta/)
+- [**My GitHub Profile**](https://github.com/rutvajmehta)
+- [**LinkedIn**](https://www.linkedin.com/in/rutvajmehta/)
