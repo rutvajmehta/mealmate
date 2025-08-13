@@ -74,7 +74,7 @@ The application will be available at `http://localhost:3000`
 
 ## Demo Video
 
-[Watch Demo Video](link_to_your_demo_video) - A brief overview of MealMate's features and functionality.
+[Watch Demo Video](https://virginiatech.zoom.us/rec/play/ldv5o1CE7SsqLTr-T1NF_mRsY3JHGWZJWDLYa2eMf_HO25SS7al59jQD5Zg0i9JZ9l8IrxQF6NJ8FrPc.mEpgxS9weR4diA5d?eagerLoadZvaPages=&accessLevel=meeting&canPlayFromShare=true&from=share_recording_detail&startTime=1755128648000&componentName=rec-play&originRequestUrl=https%3A%2F%2Fvirginiatech.zoom.us%2Frec%2Fshare%2FNWlPLyBRfVHg7sPHm5ZRZmJ8jRZCbnLxP55BEBGr5zWFmq0iAK8QJxL0B8pRITg.Nw9jX7TvnDFzz5Yn%3FstartTime%3D1755128648000)
 
 ## Future Development Roadmap
 
