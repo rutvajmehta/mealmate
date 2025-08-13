@@ -1,18 +1,31 @@
 export function useGroceryList(meals, pantry) {
-  const safeMeals = Array.isArray(meals) ? meals : [];
-  const safePantry = Array.isArray(pantry) ? pantry : [];
+  meals = meals || [];
+  pantry = pantry || [];
 
-  const have = new Set(
-    safePantry.filter(p => p?.inPantry).map(p => String(p?.name || "").toLowerCase())
-  );
-
-  const all = [];
-  for (const m of safeMeals) {
-    for (const ing of (m?.ingredients || [])) {
-      const n = String(ing || "").trim();
-      if (n && !have.has(n.toLowerCase())) all.push(n);
+  const have = [];
+  for (let i = 0; i < pantry.length; i++) {
+    const p = pantry[i];
+    if (p && p.inPantry && p.name) {
+      have.push(String(p.name).toLowerCase());
     }
   }
-  const counts = all.reduce((acc, n) => (acc[n] = (acc[n] || 0) + 1, acc), {});
-  return Object.entries(counts).map(([name, qty]) => ({ name, qty }));
+
+  const counts = {};
+  for (let i = 0; i < meals.length; i++) {
+    const m = meals[i];
+    const ings = (m && m.ingredients) ? m.ingredients : [];
+    for (let j = 0; j < ings.length; j++) {
+      const raw = ings[j];
+      const n = String(raw || "").trim();
+      if (!n) continue;
+      if (have.indexOf(n.toLowerCase()) !== -1) continue;
+      counts[n] = (counts[n] || 0) + 1;
+    }
+  }
+
+  const result = [];
+  for (const name in counts) {
+    result.push({ name, qty: counts[name] });
+  }
+  return result;
 }

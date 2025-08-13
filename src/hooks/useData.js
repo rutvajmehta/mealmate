@@ -1,80 +1,43 @@
 import { useEffect, useState } from "react";
 
 export function useData(userId) {
-  const [meals, setMeals] = useState([]);     // always arrays
+  const [meals, setMeals] = useState([]);
   const [pantry, setPantry] = useState([]);
   const [loading, setLoading] = useState(true);
 
   async function load() {
     setLoading(true);
-    try {
-      const [mRes, pRes] = await Promise.all([
-        fetch(`/api/meals?userId=${userId}`),
-        fetch(`/api/ingredients?userId=${userId}`)
-      ]);
 
-      if (mRes.ok) {
-        const m = await mRes.json();
-        setMeals(Array.isArray(m) ? m : []);
-      } else {
-        console.error("Meals GET failed:", await mRes.text());
-        setMeals([]);
-      }
+    // fetch meals
+    const mRes = await fetch(`/api/meals?userId=${userId}`);
+    const mData = await mRes.json();
+    setMeals(mData);
 
-      if (pRes.ok) {
-        const p = await pRes.json();
-        setPantry(Array.isArray(p) ? p : []);
-      } else {
-        console.error("Ingredients GET failed:", await pRes.text());
-        setPantry([]);
-      }
-    } catch (e) {
-      console.error("Load error:", e);
-      setMeals([]);
-      setPantry([]);
-    } finally {
-      setLoading(false);
-    }
+    // fetch pantry
+    const pRes = await fetch(`/api/ingredients?userId=${userId}`);
+    const pData = await pRes.json();
+    setPantry(pData);
+
+    setLoading(false);
   }
 
-  // create
   async function addMeal(payload) {
-    try {
-      const res = await fetch("/api/meals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (!res.ok) {
-        console.error("Add meal failed:", await res.text());
-        return;
-      }
-      const created = await res.json();
-      setMeals(m => [created, ...(Array.isArray(m) ? m : [])]);
-    } catch (e) {
-      console.error("Add meal error:", e);
-    }
+    const res = await fetch("/api/meals", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const created = await res.json();
+    setMeals(m => [created, ...m]);
   }
 
-  // delete
   async function deleteMeal(id) {
-    try {
-      const res = await fetch(`/api/meals?id=${id}`, { method: "DELETE" });
-      if (!res.ok) {
-        console.error("Delete meal failed:", await res.text());
-        return;
-      }
-      setMeals(ms => (Array.isArray(ms) ? ms.filter(m => m._id !== id) : []));
-    } catch (e) {
-      console.error("Delete meal error:", e);
-    }
+    await fetch(`/api/meals?id=${id}`, { method: "DELETE" });
+    setMeals(ms => ms.filter(m => m._id !== id));
   }
 
-  // pantry helpers
   async function ensurePantryItem(name, inPantry) {
-    const existing = (Array.isArray(pantry) ? pantry : []).find(
-      p => p?.name?.toLowerCase() === String(name || "").toLowerCase()
-    );
+    const existing = pantry.find(p => p.name.toLowerCase() === name.toLowerCase());
     if (existing) return existing;
 
     const res = await fetch("/api/ingredients", {
@@ -82,12 +45,8 @@ export function useData(userId) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, name, inPantry })
     });
-    if (!res.ok) {
-      console.error("Create pantry item failed:", await res.text());
-      return null;
-    }
     const created = await res.json();
-    setPantry(xs => [...(Array.isArray(xs) ? xs : []), created]);
+    setPantry(xs => [...xs, created]);
     return created;
   }
 
@@ -97,12 +56,8 @@ export function useData(userId) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, inPantry })
     });
-    if (!res.ok) {
-      console.error("Toggle pantry failed:", await res.text());
-      return;
-    }
     const updated = await res.json();
-    setPantry(xs => (Array.isArray(xs) ? xs.map(x => (x._id === id ? updated : x)) : []));
+    setPantry(xs => xs.map(x => (x._id === id ? updated : x)));
   }
 
   useEffect(() => { load(); }, [userId]);
