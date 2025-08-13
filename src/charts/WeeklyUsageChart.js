@@ -1,0 +1,37 @@
+import { Bar } from "react-chartjs-2";
+import { Chart, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from "chart.js";
+Chart.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
+
+const DAYS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+export default function WeeklyUsageChart({ meals }) {
+  const counts = Object.fromEntries(DAYS.map(d => [d, 0]));
+
+  for (let i = 0; i < meals.length; i++) {
+    const m = meals[i];
+
+    let ingLen = 0;
+    if (m && m.ingredients) {
+      ingLen = m.ingredients.length;
+    }
+
+    // add to the right day if valid
+    if (m && m.day && counts[m.day] !== undefined) {
+      counts[m.day] = (counts[m.day] || 0) + ingLen;
+    }
+  }
+
+  const data = {
+    labels: DAYS,
+    datasets: [
+      { label: "Ingredients used", data: DAYS.map(d => counts[d]) }
+    ]
+  };
+
+  return (
+    <div className="bg-white border rounded p-3">
+      <h3 className="font-semibold mb-2">Weekly Ingredient Usage</h3>
+      <Bar data={data} />
+    </div>
+  );
+}
